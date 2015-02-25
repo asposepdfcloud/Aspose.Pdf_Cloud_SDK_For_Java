@@ -62,12 +62,10 @@ import static org.junit.Assert.*;
 public class PdfApiTest {
 
 	PdfApi pdfApi;
-	String appSID = "b8d0bf27-62f0-4b5c-a9d7-83268ac53861";
-	String apiKey = "76706419dc70d5a2c37421570d1405c8";
+	String appSID = "xxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
+	String apiKey = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 
 	
-//	String appSID = "3395ba5c-3442-4146-9c9d-e9630d8d3611";
-//	String apiKey = "e8dd1b027459a0a2144c6b47ae203a2f";
 
 
 	public PdfApiTest() {
