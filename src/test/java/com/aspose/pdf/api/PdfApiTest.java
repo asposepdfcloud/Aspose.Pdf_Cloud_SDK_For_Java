@@ -4,14 +4,26 @@
  */
 package com.aspose.pdf.api;
 
-import com.aspose.client.ApiInvoker;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.RandomStringUtils;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import com.aspose.client.ApiException;
 import com.aspose.pdf.model.AnnotationResponse;
 import com.aspose.pdf.model.AnnotationsResponse;
 import com.aspose.pdf.model.AppendDocument;
 import com.aspose.pdf.model.AttachmentResponse;
 import com.aspose.pdf.model.AttachmentsResponse;
-import com.aspose.pdf.model.BarcodeResponseList;
 import com.aspose.pdf.model.BookmarksResponse;
 import com.aspose.pdf.model.DocumentPagesResponse;
 import com.aspose.pdf.model.DocumentPropertiesResponse;
@@ -26,7 +38,6 @@ import com.aspose.pdf.model.FieldsResponse;
 import com.aspose.pdf.model.ImageResponse;
 import com.aspose.pdf.model.ImagesResponse;
 import com.aspose.pdf.model.Link;
-import com.aspose.pdf.model.LinkAnnotationResponse;
 import com.aspose.pdf.model.LinkAnnotationsResponse;
 import com.aspose.pdf.model.MergeDocuments;
 import com.aspose.pdf.model.PageTextReplaceResponse;
@@ -43,21 +54,11 @@ import com.aspose.pdf.model.TextReplace;
 import com.aspose.pdf.model.TextReplaceListRequest;
 import com.aspose.pdf.model.TiffExportOptions;
 import com.aspose.pdf.model.WordCountResponse;
-import java.io.File;
-import java.net.URISyntaxException;
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
- * @author SQL
+ * @author Imran Anware
+ * @author Farooq Sheikh
  */
 public class PdfApiTest {
 
@@ -81,10 +82,8 @@ public class PdfApiTest {
 
 	@Before
 	public void setUp() {
-		pdfApi = new PdfApi();
-		pdfApi.setBasePath("http://api.aspose.com/v1.1");
-		pdfApi.getInvoker().addDefaultHeader("apiKey", apiKey);
-		pdfApi.getInvoker().addDefaultHeader("appSID", appSID);
+		pdfApi = new PdfApi("http://api.aspose.com/v1.1",apiKey,appSID);
+		
 	}
 
 	@After
@@ -313,7 +312,7 @@ public class PdfApiTest {
 	public void testGetDocumentWithFormat() {
 		System.out.println("GetDocumentWithFormat");
 		String name = "test.pdf";
-		String format = "";
+		String format = "pdf";
 		String storage = "";
 		String folder = "";
 		String outPath = "";
@@ -1096,14 +1095,17 @@ public class PdfApiTest {
 	@Test
 	public void testDeletePage() {
 		System.out.println("DeletePage");
-		String name = "test.pdf";
-		Integer pageNumber = 4;
+		String name = RandomStringUtils.random(8, true, true)+ ".pdf";
+		Integer pageNumber = 1;
 		String storage = "";
 		String folder = "";
+
 
 		SaaSposeResponse expResult = new SaaSposeResponse();
 		expResult.setStatus("OK");
 		try {
+		         pdfApi.PutCreateDocument(name, null, null, null, storage, folder);
+		         pdfApi.PutAddNewPage(name, storage, folder);
 			SaaSposeResponse result = pdfApi.DeletePage(name, pageNumber, storage, folder);
 
 			assertEquals(expResult.getStatus(), result.getStatus());

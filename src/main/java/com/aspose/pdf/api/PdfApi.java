@@ -51,6 +51,17 @@ public class PdfApi {
   ApiInvoker apiInvoker = ApiInvoker.getInstance();
   ApiInvokerResponse response = null;
 
+  public PdfApi(String basePath, String apiKey, String appSid) {
+    this.basePath = basePath;
+    apiInvoker.addDefaultHeader(apiInvoker.API_KEY, apiKey);
+    apiInvoker.addDefaultHeader(apiInvoker.APP_SID, appSid);
+  }
+
+  public PdfApi(String apiKey, String appSid) {
+    apiInvoker.addDefaultHeader(apiInvoker.API_KEY, apiKey);
+    apiInvoker.addDefaultHeader(apiInvoker.APP_SID, appSid);
+  }
+
   public ApiInvoker getInvoker() {
     return apiInvoker;
   }
@@ -63,7 +74,6 @@ public class PdfApi {
     return basePath;
   }
 
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetPageAnnotation
 	* Read document page annotation by its number.
@@ -82,36 +92,40 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/pages/{pageNumber}/annotations/{annotationNumber}/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/pages/{pageNumber}/annotations/{annotationNumber}/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(pageNumber!=null)
-      queryParams.put("pageNumber", String.valueOf(pageNumber));
+	  resourcePath = resourcePath.replace("{" + "pageNumber" + "}" , apiInvoker.toPathValue(pageNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]pageNumber.*?(?=&|\\?|$)", "");
     if(annotationNumber!=null)
-      queryParams.put("annotationNumber", String.valueOf(annotationNumber));
+	  resourcePath = resourcePath.replace("{" + "annotationNumber" + "}" , apiInvoker.toPathValue(annotationNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]annotationNumber.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (AnnotationResponse) ApiInvoker.deserialize(response, "", AnnotationResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -122,7 +136,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetPageAnnotations
 	* Read documant page annotations.
@@ -140,34 +153,36 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/pages/{pageNumber}/annotations/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/pages/{pageNumber}/annotations/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(pageNumber!=null)
-      queryParams.put("pageNumber", String.valueOf(pageNumber));
+	  resourcePath = resourcePath.replace("{" + "pageNumber" + "}" , apiInvoker.toPathValue(pageNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]pageNumber.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (AnnotationsResponse) ApiInvoker.deserialize(response, "", AnnotationsResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -178,7 +193,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetDocumentAttachmentByIndex
 	* Read document attachment info by its index.
@@ -196,34 +210,36 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/attachments/{attachmentIndex}/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/attachments/{attachmentIndex}/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(attachmentIndex!=null)
-      queryParams.put("attachmentIndex", String.valueOf(attachmentIndex));
+	  resourcePath = resourcePath.replace("{" + "attachmentIndex" + "}" , apiInvoker.toPathValue(attachmentIndex));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]attachmentIndex.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (AttachmentResponse) ApiInvoker.deserialize(response, "", AttachmentResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -234,7 +250,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetDocumentAttachments
 	* Read document attachments info.
@@ -251,32 +266,32 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/attachments/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/attachments/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (AttachmentsResponse) ApiInvoker.deserialize(response, "", AttachmentsResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -287,7 +302,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetDownloadDocumentAttachmentByIndex
 	* Download document attachment content by its index.
@@ -305,34 +319,36 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/attachments/{attachmentIndex}/download/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/attachments/{attachmentIndex}/download/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(attachmentIndex!=null)
-      queryParams.put("attachmentIndex", String.valueOf(attachmentIndex));
+	  resourcePath = resourcePath.replace("{" + "attachmentIndex" + "}" , apiInvoker.toPathValue(attachmentIndex));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]attachmentIndex.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (ResponseMessage) ApiInvoker.deserialize(response, "", ResponseMessage.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -343,7 +359,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetExtractBarcodes
 	* Recognize barcodes.
@@ -362,36 +377,40 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/pages/{pageNumber}/images/{imageNumber}/recognize/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/pages/{pageNumber}/images/{imageNumber}/recognize/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(pageNumber!=null)
-      queryParams.put("pageNumber", String.valueOf(pageNumber));
+	  resourcePath = resourcePath.replace("{" + "pageNumber" + "}" , apiInvoker.toPathValue(pageNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]pageNumber.*?(?=&|\\?|$)", "");
     if(imageNumber!=null)
-      queryParams.put("imageNumber", String.valueOf(imageNumber));
+	  resourcePath = resourcePath.replace("{" + "imageNumber" + "}" , apiInvoker.toPathValue(imageNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]imageNumber.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (BarcodeResponseList) ApiInvoker.deserialize(response, "", BarcodeResponseList.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -402,7 +421,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetDocumentBookmarks
 	* Read document bookmarks.
@@ -419,32 +437,32 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/bookmarks/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/bookmarks/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (BookmarksResponse) ApiInvoker.deserialize(response, "", BookmarksResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -455,7 +473,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetDocumentBookmarksChildren
 	* Read document bookmark/bookmarks (including children).
@@ -473,34 +490,36 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/bookmarks/{bookmarkPath}/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/bookmarks/{bookmarkPath}/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(bookmarkPath!=null)
-      queryParams.put("bookmarkPath", String.valueOf(bookmarkPath));
+	  resourcePath = resourcePath.replace("{" + "bookmarkPath" + "}" , apiInvoker.toPathValue(bookmarkPath));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]bookmarkPath.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (ResponseMessage) ApiInvoker.deserialize(response, "", ResponseMessage.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -511,7 +530,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetDocument
 	* Read common document info.
@@ -528,32 +546,32 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (ResponseMessage) ApiInvoker.deserialize(response, "", ResponseMessage.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -564,7 +582,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetDocumentWithFormat
 	* Read common document info or convert to some format if the format specified.
@@ -583,36 +600,40 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/?appSid={appSid}&amp;toFormat={toFormat}&amp;storage={storage}&amp;folder={folder}&amp;outPath={outPath}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/?appSid={appSid}&amp;toFormat={toFormat}&amp;storage={storage}&amp;folder={folder}&amp;outPath={outPath}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(format!=null)
-      queryParams.put("format", String.valueOf(format));
+	  resourcePath = resourcePath.replace("{" + "format" + "}" , apiInvoker.toPathValue(format));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]format.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     if(outPath!=null)
-      queryParams.put("outPath", String.valueOf(outPath));
+	  resourcePath = resourcePath.replace("{" + "outPath" + "}" , apiInvoker.toPathValue(outPath));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]outPath.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (ResponseMessage) ApiInvoker.deserialize(response, "", ResponseMessage.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -623,7 +644,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* PostSignDocument
 	* Sign document.
@@ -641,32 +661,32 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/sign/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/sign/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "POST", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "POST", queryParams, postBody, headerParams, formParams, contentType);
 		return (SaaSposeResponse) ApiInvoker.deserialize(response, "", SaaSposeResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -677,7 +697,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* PostSplitDocument
 	* Split document to parts.
@@ -697,38 +716,44 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/split/?appSid={appSid}&amp;toFormat={toFormat}&amp;from={from}&amp;to={to}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/split/?appSid={appSid}&amp;toFormat={toFormat}&amp;from={from}&amp;to={to}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(format!=null)
-      queryParams.put("format", String.valueOf(format));
+	  resourcePath = resourcePath.replace("{" + "format" + "}" , apiInvoker.toPathValue(format));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]format.*?(?=&|\\?|$)", "");
     if(from!=null)
-      queryParams.put("from", String.valueOf(from));
+	  resourcePath = resourcePath.replace("{" + "from" + "}" , apiInvoker.toPathValue(from));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]from.*?(?=&|\\?|$)", "");
     if(to!=null)
-      queryParams.put("to", String.valueOf(to));
+	  resourcePath = resourcePath.replace("{" + "to" + "}" , apiInvoker.toPathValue(to));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]to.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "POST", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "POST", queryParams, postBody, headerParams, formParams, contentType);
 		return (SplitResultResponse) ApiInvoker.deserialize(response, "", SplitResultResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -739,7 +764,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* PutConvertDocument
 	* Convert document from request content to format specified.
@@ -757,34 +781,37 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/convert/?appSid={appSid}&amp;toFormat={toFormat}&amp;url={url}&amp;outPath={outPath}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/convert/?appSid={appSid}&amp;toFormat={toFormat}&amp;url={url}&amp;outPath={outPath}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(format!=null)
-      queryParams.put("format", String.valueOf(format));
+	  resourcePath = resourcePath.replace("{" + "format" + "}" , apiInvoker.toPathValue(format));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]format.*?(?=&|\\?|$)", "");
     if(url!=null)
-      queryParams.put("url", String.valueOf(url));
+	  resourcePath = resourcePath.replace("{" + "url" + "}" , apiInvoker.toPathValue(url));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]url.*?(?=&|\\?|$)", "");
     if(outPath!=null)
-      queryParams.put("outPath", String.valueOf(outPath));
+	  resourcePath = resourcePath.replace("{" + "outPath" + "}" , apiInvoker.toPathValue(outPath));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]outPath.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "multipart/form-data"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
+if(contentType.startsWith("multipart/form-data")) {      
       FormDataMultiPart mp = new FormDataMultiPart();
-      hasFields = true;
       mp.field("file", file, MediaType.MULTIPART_FORM_DATA_TYPE);
-      if(hasFields)
         postBody = mp;
     }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "PUT", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "PUT", queryParams, postBody, headerParams, formParams, contentType);
 		return (ResponseMessage) ApiInvoker.deserialize(response, "", ResponseMessage.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -795,7 +822,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* PutCreateDocument
 	* Create new document.
@@ -815,38 +841,44 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/?appSid={appSid}&amp;templateFile={templateFile}&amp;dataFile={dataFile}&amp;templateType={templateType}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/?appSid={appSid}&amp;templateFile={templateFile}&amp;dataFile={dataFile}&amp;templateType={templateType}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(templateFile!=null)
-      queryParams.put("templateFile", String.valueOf(templateFile));
+	  resourcePath = resourcePath.replace("{" + "templateFile" + "}" , apiInvoker.toPathValue(templateFile));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]templateFile.*?(?=&|\\?|$)", "");
     if(dataFile!=null)
-      queryParams.put("dataFile", String.valueOf(dataFile));
+	  resourcePath = resourcePath.replace("{" + "dataFile" + "}" , apiInvoker.toPathValue(dataFile));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]dataFile.*?(?=&|\\?|$)", "");
     if(templateType!=null)
-      queryParams.put("templateType", String.valueOf(templateType));
+	  resourcePath = resourcePath.replace("{" + "templateType" + "}" , apiInvoker.toPathValue(templateType));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]templateType.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "PUT", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "PUT", queryParams, postBody, headerParams, formParams, contentType);
 		return (DocumentResponse) ApiInvoker.deserialize(response, "", DocumentResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -857,7 +889,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* PostAppendDocument
 	* Append document to existing one.
@@ -878,38 +909,44 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/appendDocument/?appSid={appSid}&amp;appendFile={appendFile}&amp;startPage={startPage}&amp;endPage={endPage}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/appendDocument/?appSid={appSid}&amp;appendFile={appendFile}&amp;startPage={startPage}&amp;endPage={endPage}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(appendFile!=null)
-      queryParams.put("appendFile", String.valueOf(appendFile));
+	  resourcePath = resourcePath.replace("{" + "appendFile" + "}" , apiInvoker.toPathValue(appendFile));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]appendFile.*?(?=&|\\?|$)", "");
     if(startPage!=null)
-      queryParams.put("startPage", String.valueOf(startPage));
+	  resourcePath = resourcePath.replace("{" + "startPage" + "}" , apiInvoker.toPathValue(startPage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]startPage.*?(?=&|\\?|$)", "");
     if(endPage!=null)
-      queryParams.put("endPage", String.valueOf(endPage));
+	  resourcePath = resourcePath.replace("{" + "endPage" + "}" , apiInvoker.toPathValue(endPage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]endPage.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "POST", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "POST", queryParams, postBody, headerParams, formParams, contentType);
 		return (DocumentResponse) ApiInvoker.deserialize(response, "", DocumentResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -920,7 +957,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* PutMergeDocuments
 	* Merge a list of documents.
@@ -938,32 +974,32 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/merge/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/merge/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "PUT", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "PUT", queryParams, postBody, headerParams, formParams, contentType);
 		return (DocumentResponse) ApiInvoker.deserialize(response, "", DocumentResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -974,7 +1010,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* PutDocumentSaveAsTiff
 	* Save document as Tiff image.
@@ -1008,64 +1043,96 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/SaveAs/tiff/?appSid={appSid}&amp;resultFile={resultFile}&amp;brightness={brightness}&amp;compression={compression}&amp;colorDepth={colorDepth}&amp;leftMargin={leftMargin}&amp;rightMargin={rightMargin}&amp;topMargin={topMargin}&amp;bottomMargin={bottomMargin}&amp;orientation={orientation}&amp;skipBlankPages={skipBlankPages}&amp;width={width}&amp;height={height}&amp;xResolution={xResolution}&amp;yResolution={yResolution}&amp;pageIndex={pageIndex}&amp;pageCount={pageCount}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/SaveAs/tiff/?appSid={appSid}&amp;resultFile={resultFile}&amp;brightness={brightness}&amp;compression={compression}&amp;colorDepth={colorDepth}&amp;leftMargin={leftMargin}&amp;rightMargin={rightMargin}&amp;topMargin={topMargin}&amp;bottomMargin={bottomMargin}&amp;orientation={orientation}&amp;skipBlankPages={skipBlankPages}&amp;width={width}&amp;height={height}&amp;xResolution={xResolution}&amp;yResolution={yResolution}&amp;pageIndex={pageIndex}&amp;pageCount={pageCount}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(resultFile!=null)
-      queryParams.put("resultFile", String.valueOf(resultFile));
+	  resourcePath = resourcePath.replace("{" + "resultFile" + "}" , apiInvoker.toPathValue(resultFile));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]resultFile.*?(?=&|\\?|$)", "");
     if(brightness!=null)
-      queryParams.put("brightness", String.valueOf(brightness));
+	  resourcePath = resourcePath.replace("{" + "brightness" + "}" , apiInvoker.toPathValue(brightness));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]brightness.*?(?=&|\\?|$)", "");
     if(compression!=null)
-      queryParams.put("compression", String.valueOf(compression));
+	  resourcePath = resourcePath.replace("{" + "compression" + "}" , apiInvoker.toPathValue(compression));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]compression.*?(?=&|\\?|$)", "");
     if(colorDepth!=null)
-      queryParams.put("colorDepth", String.valueOf(colorDepth));
+	  resourcePath = resourcePath.replace("{" + "colorDepth" + "}" , apiInvoker.toPathValue(colorDepth));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]colorDepth.*?(?=&|\\?|$)", "");
     if(leftMargin!=null)
-      queryParams.put("leftMargin", String.valueOf(leftMargin));
+	  resourcePath = resourcePath.replace("{" + "leftMargin" + "}" , apiInvoker.toPathValue(leftMargin));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]leftMargin.*?(?=&|\\?|$)", "");
     if(rightMargin!=null)
-      queryParams.put("rightMargin", String.valueOf(rightMargin));
+	  resourcePath = resourcePath.replace("{" + "rightMargin" + "}" , apiInvoker.toPathValue(rightMargin));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]rightMargin.*?(?=&|\\?|$)", "");
     if(topMargin!=null)
-      queryParams.put("topMargin", String.valueOf(topMargin));
+	  resourcePath = resourcePath.replace("{" + "topMargin" + "}" , apiInvoker.toPathValue(topMargin));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]topMargin.*?(?=&|\\?|$)", "");
     if(bottomMargin!=null)
-      queryParams.put("bottomMargin", String.valueOf(bottomMargin));
+	  resourcePath = resourcePath.replace("{" + "bottomMargin" + "}" , apiInvoker.toPathValue(bottomMargin));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]bottomMargin.*?(?=&|\\?|$)", "");
     if(orientation!=null)
-      queryParams.put("orientation", String.valueOf(orientation));
+	  resourcePath = resourcePath.replace("{" + "orientation" + "}" , apiInvoker.toPathValue(orientation));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]orientation.*?(?=&|\\?|$)", "");
     if(skipBlankPages!=null)
-      queryParams.put("skipBlankPages", String.valueOf(skipBlankPages));
+	  resourcePath = resourcePath.replace("{" + "skipBlankPages" + "}" , apiInvoker.toPathValue(skipBlankPages));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]skipBlankPages.*?(?=&|\\?|$)", "");
     if(width!=null)
-      queryParams.put("width", String.valueOf(width));
+	  resourcePath = resourcePath.replace("{" + "width" + "}" , apiInvoker.toPathValue(width));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]width.*?(?=&|\\?|$)", "");
     if(height!=null)
-      queryParams.put("height", String.valueOf(height));
+	  resourcePath = resourcePath.replace("{" + "height" + "}" , apiInvoker.toPathValue(height));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]height.*?(?=&|\\?|$)", "");
     if(xResolution!=null)
-      queryParams.put("xResolution", String.valueOf(xResolution));
+	  resourcePath = resourcePath.replace("{" + "xResolution" + "}" , apiInvoker.toPathValue(xResolution));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]xResolution.*?(?=&|\\?|$)", "");
     if(yResolution!=null)
-      queryParams.put("yResolution", String.valueOf(yResolution));
+	  resourcePath = resourcePath.replace("{" + "yResolution" + "}" , apiInvoker.toPathValue(yResolution));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]yResolution.*?(?=&|\\?|$)", "");
     if(pageIndex!=null)
-      queryParams.put("pageIndex", String.valueOf(pageIndex));
+	  resourcePath = resourcePath.replace("{" + "pageIndex" + "}" , apiInvoker.toPathValue(pageIndex));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]pageIndex.*?(?=&|\\?|$)", "");
     if(pageCount!=null)
-      queryParams.put("pageCount", String.valueOf(pageCount));
+	  resourcePath = resourcePath.replace("{" + "pageCount" + "}" , apiInvoker.toPathValue(pageCount));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]pageCount.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "PUT", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "PUT", queryParams, postBody, headerParams, formParams, contentType);
 		return (SaaSposeResponse) ApiInvoker.deserialize(response, "", SaaSposeResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -1076,7 +1143,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetField
 	* Get document field by name.
@@ -1094,34 +1160,36 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/fields/{fieldName}/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/fields/{fieldName}/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(fieldName!=null)
-      queryParams.put("fieldName", String.valueOf(fieldName));
+	  resourcePath = resourcePath.replace("{" + "fieldName" + "}" , apiInvoker.toPathValue(fieldName));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]fieldName.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (FieldResponse) ApiInvoker.deserialize(response, "", FieldResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -1132,7 +1200,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetFields
 	* Get document fields.
@@ -1149,32 +1216,32 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/fields/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/fields/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (FieldsResponse) ApiInvoker.deserialize(response, "", FieldsResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -1185,7 +1252,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* PostCreateField
 	* Create field.
@@ -1204,34 +1270,36 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/fields/?appSid={appSid}&amp;page={page}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/fields/?appSid={appSid}&amp;page={page}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(page!=null)
-      queryParams.put("page", String.valueOf(page));
+	  resourcePath = resourcePath.replace("{" + "page" + "}" , apiInvoker.toPathValue(page));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]page.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "POST", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "POST", queryParams, postBody, headerParams, formParams, contentType);
 		return (SaaSposeResponse) ApiInvoker.deserialize(response, "", SaaSposeResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -1242,7 +1310,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* PutUpdateField
 	* Update field.
@@ -1261,34 +1328,36 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/fields/{fieldName}/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/fields/{fieldName}/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     if(fieldName!=null)
-      queryParams.put("fieldName", String.valueOf(fieldName));
+	  resourcePath = resourcePath.replace("{" + "fieldName" + "}" , apiInvoker.toPathValue(fieldName));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]fieldName.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "PUT", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "PUT", queryParams, postBody, headerParams, formParams, contentType);
 		return (FieldResponse) ApiInvoker.deserialize(response, "", FieldResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -1299,7 +1368,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* PutUpdateFields
 	* Update fields.
@@ -1317,32 +1385,32 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/fields/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/fields/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "PUT", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "PUT", queryParams, postBody, headerParams, formParams, contentType);
 		return (FieldsResponse) ApiInvoker.deserialize(response, "", FieldsResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -1353,7 +1421,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetFragment
 	* Read page fragment.
@@ -1373,38 +1440,44 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/pages/{pageNumber}/fragments/{fragmentNumber}/?appSid={appSid}&amp;withEmpty={withEmpty}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/pages/{pageNumber}/fragments/{fragmentNumber}/?appSid={appSid}&amp;withEmpty={withEmpty}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(pageNumber!=null)
-      queryParams.put("pageNumber", String.valueOf(pageNumber));
+	  resourcePath = resourcePath.replace("{" + "pageNumber" + "}" , apiInvoker.toPathValue(pageNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]pageNumber.*?(?=&|\\?|$)", "");
     if(fragmentNumber!=null)
-      queryParams.put("fragmentNumber", String.valueOf(fragmentNumber));
+	  resourcePath = resourcePath.replace("{" + "fragmentNumber" + "}" , apiInvoker.toPathValue(fragmentNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]fragmentNumber.*?(?=&|\\?|$)", "");
     if(withEmpty!=null)
-      queryParams.put("withEmpty", String.valueOf(withEmpty));
+	  resourcePath = resourcePath.replace("{" + "withEmpty" + "}" , apiInvoker.toPathValue(withEmpty));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]withEmpty.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (TextItemsResponse) ApiInvoker.deserialize(response, "", TextItemsResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -1415,7 +1488,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetFragments
 	* Read page fragments.
@@ -1434,36 +1506,40 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/pages/{pageNumber}/fragments/?appSid={appSid}&amp;withEmpty={withEmpty}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/pages/{pageNumber}/fragments/?appSid={appSid}&amp;withEmpty={withEmpty}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(pageNumber!=null)
-      queryParams.put("pageNumber", String.valueOf(pageNumber));
+	  resourcePath = resourcePath.replace("{" + "pageNumber" + "}" , apiInvoker.toPathValue(pageNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]pageNumber.*?(?=&|\\?|$)", "");
     if(withEmpty!=null)
-      queryParams.put("withEmpty", String.valueOf(withEmpty));
+	  resourcePath = resourcePath.replace("{" + "withEmpty" + "}" , apiInvoker.toPathValue(withEmpty));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]withEmpty.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (TextItemsResponse) ApiInvoker.deserialize(response, "", TextItemsResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -1474,7 +1550,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetFragmentTextFormat
 	* Read page fragment text format.
@@ -1493,36 +1568,40 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/pages/{pageNumber}/fragments/{fragmentNumber}/textFormat/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/pages/{pageNumber}/fragments/{fragmentNumber}/textFormat/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(pageNumber!=null)
-      queryParams.put("pageNumber", String.valueOf(pageNumber));
+	  resourcePath = resourcePath.replace("{" + "pageNumber" + "}" , apiInvoker.toPathValue(pageNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]pageNumber.*?(?=&|\\?|$)", "");
     if(fragmentNumber!=null)
-      queryParams.put("fragmentNumber", String.valueOf(fragmentNumber));
+	  resourcePath = resourcePath.replace("{" + "fragmentNumber" + "}" , apiInvoker.toPathValue(fragmentNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]fragmentNumber.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (TextFormatResponse) ApiInvoker.deserialize(response, "", TextFormatResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -1533,7 +1612,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetSegment
 	* Read segment.
@@ -1553,38 +1631,44 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/pages/{pageNumber}/fragments/{fragmentNumber}/segments/{segmentNumber}/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/pages/{pageNumber}/fragments/{fragmentNumber}/segments/{segmentNumber}/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(pageNumber!=null)
-      queryParams.put("pageNumber", String.valueOf(pageNumber));
+	  resourcePath = resourcePath.replace("{" + "pageNumber" + "}" , apiInvoker.toPathValue(pageNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]pageNumber.*?(?=&|\\?|$)", "");
     if(fragmentNumber!=null)
-      queryParams.put("fragmentNumber", String.valueOf(fragmentNumber));
+	  resourcePath = resourcePath.replace("{" + "fragmentNumber" + "}" , apiInvoker.toPathValue(fragmentNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]fragmentNumber.*?(?=&|\\?|$)", "");
     if(segmentNumber!=null)
-      queryParams.put("segmentNumber", String.valueOf(segmentNumber));
+	  resourcePath = resourcePath.replace("{" + "segmentNumber" + "}" , apiInvoker.toPathValue(segmentNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]segmentNumber.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (TextItemResponse) ApiInvoker.deserialize(response, "", TextItemResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -1595,7 +1679,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetSegments
 	* Read fragment segments.
@@ -1615,38 +1698,44 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/pages/{pageNumber}/fragments/{fragmentNumber}/segments/?appSid={appSid}&amp;withEmpty={withEmpty}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/pages/{pageNumber}/fragments/{fragmentNumber}/segments/?appSid={appSid}&amp;withEmpty={withEmpty}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(pageNumber!=null)
-      queryParams.put("pageNumber", String.valueOf(pageNumber));
+	  resourcePath = resourcePath.replace("{" + "pageNumber" + "}" , apiInvoker.toPathValue(pageNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]pageNumber.*?(?=&|\\?|$)", "");
     if(fragmentNumber!=null)
-      queryParams.put("fragmentNumber", String.valueOf(fragmentNumber));
+	  resourcePath = resourcePath.replace("{" + "fragmentNumber" + "}" , apiInvoker.toPathValue(fragmentNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]fragmentNumber.*?(?=&|\\?|$)", "");
     if(withEmpty!=null)
-      queryParams.put("withEmpty", String.valueOf(withEmpty));
+	  resourcePath = resourcePath.replace("{" + "withEmpty" + "}" , apiInvoker.toPathValue(withEmpty));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]withEmpty.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (TextItemsResponse) ApiInvoker.deserialize(response, "", TextItemsResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -1657,7 +1746,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetSegmentTextFormat
 	* Read segment text format.
@@ -1677,38 +1765,44 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/pages/{pageNumber}/fragments/{fragmentNumber}/segments/{segmentNumber}/texttoFormat/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/pages/{pageNumber}/fragments/{fragmentNumber}/segments/{segmentNumber}/texttoFormat/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(pageNumber!=null)
-      queryParams.put("pageNumber", String.valueOf(pageNumber));
+	  resourcePath = resourcePath.replace("{" + "pageNumber" + "}" , apiInvoker.toPathValue(pageNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]pageNumber.*?(?=&|\\?|$)", "");
     if(fragmentNumber!=null)
-      queryParams.put("fragmentNumber", String.valueOf(fragmentNumber));
+	  resourcePath = resourcePath.replace("{" + "fragmentNumber" + "}" , apiInvoker.toPathValue(fragmentNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]fragmentNumber.*?(?=&|\\?|$)", "");
     if(segmentNumber!=null)
-      queryParams.put("segmentNumber", String.valueOf(segmentNumber));
+	  resourcePath = resourcePath.replace("{" + "segmentNumber" + "}" , apiInvoker.toPathValue(segmentNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]segmentNumber.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (TextFormatResponse) ApiInvoker.deserialize(response, "", TextFormatResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -1719,7 +1813,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetImage
 	* Read document image by number.
@@ -1738,36 +1831,40 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/pages/{pageNumber}/images/{imageNumber}/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/pages/{pageNumber}/images/{imageNumber}/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(pageNumber!=null)
-      queryParams.put("pageNumber", String.valueOf(pageNumber));
+	  resourcePath = resourcePath.replace("{" + "pageNumber" + "}" , apiInvoker.toPathValue(pageNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]pageNumber.*?(?=&|\\?|$)", "");
     if(imageNumber!=null)
-      queryParams.put("imageNumber", String.valueOf(imageNumber));
+	  resourcePath = resourcePath.replace("{" + "imageNumber" + "}" , apiInvoker.toPathValue(imageNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]imageNumber.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (ResponseMessage) ApiInvoker.deserialize(response, "", ResponseMessage.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -1778,7 +1875,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetImages
 	* Read document images.
@@ -1796,34 +1892,36 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/pages/{pageNumber}/images/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/pages/{pageNumber}/images/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(pageNumber!=null)
-      queryParams.put("pageNumber", String.valueOf(pageNumber));
+	  resourcePath = resourcePath.replace("{" + "pageNumber" + "}" , apiInvoker.toPathValue(pageNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]pageNumber.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (ImagesResponse) ApiInvoker.deserialize(response, "", ImagesResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -1834,7 +1932,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetImageWithFormat
 	* Extract document image in format specified.
@@ -1856,42 +1953,52 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/pages/{pageNumber}/images/{imageNumber}/?toFormat={toFormat}&amp;appSid={appSid}&amp;width={width}&amp;height={height}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/pages/{pageNumber}/images/{imageNumber}/?toFormat={toFormat}&amp;appSid={appSid}&amp;width={width}&amp;height={height}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(pageNumber!=null)
-      queryParams.put("pageNumber", String.valueOf(pageNumber));
+	  resourcePath = resourcePath.replace("{" + "pageNumber" + "}" , apiInvoker.toPathValue(pageNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]pageNumber.*?(?=&|\\?|$)", "");
     if(imageNumber!=null)
-      queryParams.put("imageNumber", String.valueOf(imageNumber));
+	  resourcePath = resourcePath.replace("{" + "imageNumber" + "}" , apiInvoker.toPathValue(imageNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]imageNumber.*?(?=&|\\?|$)", "");
     if(format!=null)
-      queryParams.put("format", String.valueOf(format));
+	  resourcePath = resourcePath.replace("{" + "format" + "}" , apiInvoker.toPathValue(format));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]format.*?(?=&|\\?|$)", "");
     if(width!=null)
-      queryParams.put("width", String.valueOf(width));
+	  resourcePath = resourcePath.replace("{" + "width" + "}" , apiInvoker.toPathValue(width));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]width.*?(?=&|\\?|$)", "");
     if(height!=null)
-      queryParams.put("height", String.valueOf(height));
+	  resourcePath = resourcePath.replace("{" + "height" + "}" , apiInvoker.toPathValue(height));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]height.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (ResponseMessage) ApiInvoker.deserialize(response, "", ResponseMessage.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -1902,7 +2009,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* PostReplaceImage
 	* Replace document image.
@@ -1923,40 +2029,49 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/pages/{pageNumber}/images/{imageNumber}/?appSid={appSid}&amp;imageFile={imageFile}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/pages/{pageNumber}/images/{imageNumber}/?appSid={appSid}&amp;imageFile={imageFile}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(pageNumber!=null)
-      queryParams.put("pageNumber", String.valueOf(pageNumber));
+	  resourcePath = resourcePath.replace("{" + "pageNumber" + "}" , apiInvoker.toPathValue(pageNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]pageNumber.*?(?=&|\\?|$)", "");
     if(imageNumber!=null)
-      queryParams.put("imageNumber", String.valueOf(imageNumber));
+	  resourcePath = resourcePath.replace("{" + "imageNumber" + "}" , apiInvoker.toPathValue(imageNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]imageNumber.*?(?=&|\\?|$)", "");
     if(imageFile!=null)
-      queryParams.put("imageFile", String.valueOf(imageFile));
+	  resourcePath = resourcePath.replace("{" + "imageFile" + "}" , apiInvoker.toPathValue(imageFile));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]imageFile.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "multipart/form-data"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
+if(contentType.startsWith("multipart/form-data")) {      
       FormDataMultiPart mp = new FormDataMultiPart();
-      hasFields = true;
       mp.field("file", file, MediaType.MULTIPART_FORM_DATA_TYPE);
-      if(hasFields)
         postBody = mp;
     }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "POST", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "POST", queryParams, postBody, headerParams, formParams, contentType);
 		return (ImageResponse) ApiInvoker.deserialize(response, "", ImageResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -1967,7 +2082,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetPageLinkAnnotationByIndex
 	* Read document page link annotation by its index.
@@ -1986,36 +2100,40 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/pages/{pageNumber}/links/{linkIndex}/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/pages/{pageNumber}/links/{linkIndex}/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(pageNumber!=null)
-      queryParams.put("pageNumber", String.valueOf(pageNumber));
+	  resourcePath = resourcePath.replace("{" + "pageNumber" + "}" , apiInvoker.toPathValue(pageNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]pageNumber.*?(?=&|\\?|$)", "");
     if(linkIndex!=null)
-      queryParams.put("linkIndex", String.valueOf(linkIndex));
+	  resourcePath = resourcePath.replace("{" + "linkIndex" + "}" , apiInvoker.toPathValue(linkIndex));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]linkIndex.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (LinkAnnotationResponse) ApiInvoker.deserialize(response, "", LinkAnnotationResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -2026,7 +2144,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetPageLinkAnnotations
 	* Read document page link annotations.
@@ -2044,34 +2161,36 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/pages/{pageNumber}/links/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/pages/{pageNumber}/links/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(pageNumber!=null)
-      queryParams.put("pageNumber", String.valueOf(pageNumber));
+	  resourcePath = resourcePath.replace("{" + "pageNumber" + "}" , apiInvoker.toPathValue(pageNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]pageNumber.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (LinkAnnotationsResponse) ApiInvoker.deserialize(response, "", LinkAnnotationsResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -2082,7 +2201,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* DeletePage
 	* Delete document page by its number.
@@ -2100,34 +2218,36 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/pages/{pageNumber}/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/pages/{pageNumber}/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(pageNumber!=null)
-      queryParams.put("pageNumber", String.valueOf(pageNumber));
+	  resourcePath = resourcePath.replace("{" + "pageNumber" + "}" , apiInvoker.toPathValue(pageNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]pageNumber.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "DELETE", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "DELETE", queryParams, postBody, headerParams, formParams, contentType);
 		return (SaaSposeResponse) ApiInvoker.deserialize(response, "", SaaSposeResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -2138,7 +2258,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetPage
 	* Read document page info.
@@ -2156,34 +2275,36 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/pages/{pageNumber}/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/pages/{pageNumber}/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(pageNumber!=null)
-      queryParams.put("pageNumber", String.valueOf(pageNumber));
+	  resourcePath = resourcePath.replace("{" + "pageNumber" + "}" , apiInvoker.toPathValue(pageNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]pageNumber.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (ResponseMessage) ApiInvoker.deserialize(response, "", ResponseMessage.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -2194,7 +2315,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetPages
 	* Read document pages info.
@@ -2211,32 +2331,32 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/pages/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/pages/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (DocumentPagesResponse) ApiInvoker.deserialize(response, "", DocumentPagesResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -2247,7 +2367,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetPageWithFormat
 	* Convert document page to format specified.
@@ -2268,40 +2387,48 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/pages/{pageNumber}/?appSid={appSid}&amp;toFormat={toFormat}&amp;width={width}&amp;height={height}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/pages/{pageNumber}/?appSid={appSid}&amp;toFormat={toFormat}&amp;width={width}&amp;height={height}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(pageNumber!=null)
-      queryParams.put("pageNumber", String.valueOf(pageNumber));
+	  resourcePath = resourcePath.replace("{" + "pageNumber" + "}" , apiInvoker.toPathValue(pageNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]pageNumber.*?(?=&|\\?|$)", "");
     if(format!=null)
-      queryParams.put("format", String.valueOf(format));
+	  resourcePath = resourcePath.replace("{" + "format" + "}" , apiInvoker.toPathValue(format));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]format.*?(?=&|\\?|$)", "");
     if(width!=null)
-      queryParams.put("width", String.valueOf(width));
+	  resourcePath = resourcePath.replace("{" + "width" + "}" , apiInvoker.toPathValue(width));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]width.*?(?=&|\\?|$)", "");
     if(height!=null)
-      queryParams.put("height", String.valueOf(height));
+	  resourcePath = resourcePath.replace("{" + "height" + "}" , apiInvoker.toPathValue(height));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]height.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (ResponseMessage) ApiInvoker.deserialize(response, "", ResponseMessage.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -2312,7 +2439,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetWordsPerPage
 	* Get number of words per document page.
@@ -2329,32 +2455,32 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/pages/wordCount/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/pages/wordCount/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (WordCountResponse) ApiInvoker.deserialize(response, "", WordCountResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -2365,7 +2491,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* PostMovePage
 	* Move page to new position.
@@ -2384,36 +2509,40 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/pages/{pageNumber}/movePage/?newIndex={newIndex}&amp;appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/pages/{pageNumber}/movePage/?newIndex={newIndex}&amp;appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(pageNumber!=null)
-      queryParams.put("pageNumber", String.valueOf(pageNumber));
+	  resourcePath = resourcePath.replace("{" + "pageNumber" + "}" , apiInvoker.toPathValue(pageNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]pageNumber.*?(?=&|\\?|$)", "");
     if(newIndex!=null)
-      queryParams.put("newIndex", String.valueOf(newIndex));
+	  resourcePath = resourcePath.replace("{" + "newIndex" + "}" , apiInvoker.toPathValue(newIndex));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]newIndex.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "POST", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "POST", queryParams, postBody, headerParams, formParams, contentType);
 		return (SaaSposeResponse) ApiInvoker.deserialize(response, "", SaaSposeResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -2424,7 +2553,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* PostSignPage
 	* Sign page.
@@ -2443,34 +2571,36 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/pages/{pageNumber}/sign/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/pages/{pageNumber}/sign/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(pageNumber!=null)
-      queryParams.put("pageNumber", String.valueOf(pageNumber));
+	  resourcePath = resourcePath.replace("{" + "pageNumber" + "}" , apiInvoker.toPathValue(pageNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]pageNumber.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "POST", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "POST", queryParams, postBody, headerParams, formParams, contentType);
 		return (SaaSposeResponse) ApiInvoker.deserialize(response, "", SaaSposeResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -2481,7 +2611,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* PutAddNewPage
 	* Add new page to end of the document.
@@ -2498,32 +2627,32 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/pages/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/pages/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "PUT", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "PUT", queryParams, postBody, headerParams, formParams, contentType);
 		return (DocumentPagesResponse) ApiInvoker.deserialize(response, "", DocumentPagesResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -2534,7 +2663,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* PutPageAddStamp
 	* Add page stamp.
@@ -2553,34 +2681,36 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/pages/{pageNumber}/stamp/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/pages/{pageNumber}/stamp/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(pageNumber!=null)
-      queryParams.put("pageNumber", String.valueOf(pageNumber));
+	  resourcePath = resourcePath.replace("{" + "pageNumber" + "}" , apiInvoker.toPathValue(pageNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]pageNumber.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "PUT", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "PUT", queryParams, postBody, headerParams, formParams, contentType);
 		return (SaaSposeResponse) ApiInvoker.deserialize(response, "", SaaSposeResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -2591,7 +2721,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* DeleteProperties
 	* Delete document properties.
@@ -2608,32 +2737,32 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/documentproperties/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/documentproperties/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "DELETE", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "DELETE", queryParams, postBody, headerParams, formParams, contentType);
 		return (SaaSposeResponse) ApiInvoker.deserialize(response, "", SaaSposeResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -2644,7 +2773,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* DeleteProperty
 	* Delete document property.
@@ -2662,34 +2790,36 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/documentproperties/{propertyName}/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/documentproperties/{propertyName}/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(propertyName!=null)
-      queryParams.put("propertyName", String.valueOf(propertyName));
+	  resourcePath = resourcePath.replace("{" + "propertyName" + "}" , apiInvoker.toPathValue(propertyName));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]propertyName.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "DELETE", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "DELETE", queryParams, postBody, headerParams, formParams, contentType);
 		return (SaaSposeResponse) ApiInvoker.deserialize(response, "", SaaSposeResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -2700,7 +2830,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetDocumentProperties
 	* Read document properties.
@@ -2717,32 +2846,32 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/documentproperties/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/documentproperties/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (DocumentPropertiesResponse) ApiInvoker.deserialize(response, "", DocumentPropertiesResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -2753,7 +2882,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetDocumentProperty
 	* Read document property by name.
@@ -2771,34 +2899,36 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/documentproperties/{propertyName}/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/documentproperties/{propertyName}/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(propertyName!=null)
-      queryParams.put("propertyName", String.valueOf(propertyName));
+	  resourcePath = resourcePath.replace("{" + "propertyName" + "}" , apiInvoker.toPathValue(propertyName));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]propertyName.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (DocumentPropertyResponse) ApiInvoker.deserialize(response, "", DocumentPropertyResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -2809,7 +2939,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* PutSetProperty
 	* Add/update document property.
@@ -2828,34 +2957,36 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/documentproperties/{propertyName}/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/documentproperties/{propertyName}/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(propertyName!=null)
-      queryParams.put("propertyName", String.valueOf(propertyName));
+	  resourcePath = resourcePath.replace("{" + "propertyName" + "}" , apiInvoker.toPathValue(propertyName));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]propertyName.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "PUT", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "PUT", queryParams, postBody, headerParams, formParams, contentType);
 		return (DocumentPropertyResponse) ApiInvoker.deserialize(response, "", DocumentPropertyResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -2866,7 +2997,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetPageTextItems
 	* Read page text items.
@@ -2885,36 +3015,40 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/pages/{pageNumber}/textItems/?appSid={appSid}&amp;withEmpty={withEmpty}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/pages/{pageNumber}/textItems/?appSid={appSid}&amp;withEmpty={withEmpty}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(pageNumber!=null)
-      queryParams.put("pageNumber", String.valueOf(pageNumber));
+	  resourcePath = resourcePath.replace("{" + "pageNumber" + "}" , apiInvoker.toPathValue(pageNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]pageNumber.*?(?=&|\\?|$)", "");
     if(withEmpty!=null)
-      queryParams.put("withEmpty", String.valueOf(withEmpty));
+	  resourcePath = resourcePath.replace("{" + "withEmpty" + "}" , apiInvoker.toPathValue(withEmpty));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]withEmpty.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (TextItemsResponse) ApiInvoker.deserialize(response, "", TextItemsResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -2925,7 +3059,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* GetTextItems
 	* Read document text items.
@@ -2943,34 +3076,36 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/textItems/?appSid={appSid}&amp;withEmpty={withEmpty}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/textItems/?appSid={appSid}&amp;withEmpty={withEmpty}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(withEmpty!=null)
-      queryParams.put("withEmpty", String.valueOf(withEmpty));
+	  resourcePath = resourcePath.replace("{" + "withEmpty" + "}" , apiInvoker.toPathValue(withEmpty));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]withEmpty.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "GET", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "GET", queryParams, postBody, headerParams, formParams, contentType);
 		return (TextItemsResponse) ApiInvoker.deserialize(response, "", TextItemsResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -2981,7 +3116,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* PostDocumentReplaceText
 	* Document's replace text method.
@@ -2999,32 +3133,32 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/replaceText/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/replaceText/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "POST", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "POST", queryParams, postBody, headerParams, formParams, contentType);
 		return (DocumentTextReplaceResponse) ApiInvoker.deserialize(response, "", DocumentTextReplaceResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -3035,7 +3169,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* PostDocumentReplaceTextList
 	* Document's replace text method.
@@ -3053,32 +3186,32 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/replaceTextList/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/replaceTextList/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "POST", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "POST", queryParams, postBody, headerParams, formParams, contentType);
 		return (DocumentTextReplaceResponse) ApiInvoker.deserialize(response, "", DocumentTextReplaceResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -3089,7 +3222,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* PostPageReplaceText
 	* Page's replace text method.
@@ -3108,34 +3240,36 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/pages/{pageNumber}/replaceText/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/pages/{pageNumber}/replaceText/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(pageNumber!=null)
-      queryParams.put("pageNumber", String.valueOf(pageNumber));
+	  resourcePath = resourcePath.replace("{" + "pageNumber" + "}" , apiInvoker.toPathValue(pageNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]pageNumber.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "POST", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "POST", queryParams, postBody, headerParams, formParams, contentType);
 		return (PageTextReplaceResponse) ApiInvoker.deserialize(response, "", PageTextReplaceResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
@@ -3146,7 +3280,6 @@ public class PdfApi {
       }
     }
   }
-  //error info- code: 404 reason: "no project found" model: <none>
   /**
 	* PostPageReplaceTextList
 	* Page's replace text method.
@@ -3165,34 +3298,36 @@ public class PdfApi {
        throw new ApiException(400, "missing required params");
     }
     // create path and map variables
-    String path = "/pdf/{name}/pages/{pageNumber}/replaceTextList/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}".replaceAll("\\{format\\}","json");
-
+    String resourcePath = "/pdf/{name}/pages/{pageNumber}/replaceTextList/?appSid={appSid}&amp;storage={storage}&amp;folder={folder}";
+	resourcePath = resourcePath.replaceAll("\\*", "").replace("&amp;", "&").replace("/?", "?").replace("toFormat={toFormat}", "format={format}");
     // query params
     Map<String, String> queryParams = new HashMap<String, String>();
     Map<String, String> headerParams = new HashMap<String, String>();
     Map<String, String> formParams = new HashMap<String, String>();
 
     if(name!=null)
-      queryParams.put("name", String.valueOf(name));
+	  resourcePath = resourcePath.replace("{" + "name" + "}" , apiInvoker.toPathValue(name));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]name.*?(?=&|\\?|$)", "");
     if(pageNumber!=null)
-      queryParams.put("pageNumber", String.valueOf(pageNumber));
+	  resourcePath = resourcePath.replace("{" + "pageNumber" + "}" , apiInvoker.toPathValue(pageNumber));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]pageNumber.*?(?=&|\\?|$)", "");
     if(storage!=null)
-      queryParams.put("storage", String.valueOf(storage));
+	  resourcePath = resourcePath.replace("{" + "storage" + "}" , apiInvoker.toPathValue(storage));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]storage.*?(?=&|\\?|$)", "");
     if(folder!=null)
-      queryParams.put("folder", String.valueOf(folder));
+	  resourcePath = resourcePath.replace("{" + "folder" + "}" , apiInvoker.toPathValue(folder));
+	  else
+	  resourcePath = resourcePath.replaceAll("[&?]folder.*?(?=&|\\?|$)", "");
     String[] contentTypes = {
       "application/json"};
 
     String contentType = contentTypes.length > 0 ? contentTypes[0] : "application/json";
 
-    if(contentType.startsWith("multipart/form-data")) {
-      boolean hasFields = false;
-      FormDataMultiPart mp = new FormDataMultiPart();
-      if(hasFields)
-        postBody = mp;
-    }
-    try {
-		response = apiInvoker.invokeAPI(basePath, path, "POST", queryParams, postBody, headerParams, formParams, contentType);
+try {
+		response = apiInvoker.invokeAPI(basePath, resourcePath, "POST", queryParams, postBody, headerParams, formParams, contentType);
 		return (PageTextReplaceResponse) ApiInvoker.deserialize(response, "", PageTextReplaceResponse.class);
     } catch (ApiException ex) {
       if(ex.getCode() == 404) {
