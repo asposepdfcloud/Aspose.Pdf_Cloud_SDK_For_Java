@@ -18,7 +18,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.aspose.client.ApiException;
+import com.aspose.pdf.client.ApiException;
 import com.aspose.pdf.model.AnnotationResponse;
 import com.aspose.pdf.model.AnnotationsResponse;
 import com.aspose.pdf.model.AppendDocument;

@@ -1,9 +1,8 @@
 package com.aspose.pdf.api;
 
-import com.aspose.client.ApiException;
-import com.aspose.client.ApiInvoker;
-import com.aspose.client.ApiInvokerResponse;
-
+import com.aspose.pdf.client.ApiException;
+import com.aspose.pdf.client.ApiInvoker;
+import com.aspose.pdf.client.ApiInvokerResponse;
 import com.aspose.pdf.model.BookmarksResponse;
 import com.aspose.pdf.model.DocumentResponse;
 import com.aspose.pdf.model.PageTextReplaceResponse;
@@ -57,11 +56,26 @@ public class PdfApi {
     apiInvoker.addDefaultHeader(apiInvoker.APP_SID, appSid);
   }
 
+  public PdfApi(String basePath, String apiKey, String appSid, boolean isDebug) {
+          this.basePath = basePath;
+          apiInvoker.addDefaultHeader(apiInvoker.API_KEY, apiKey);
+          apiInvoker.addDefaultHeader(apiInvoker.APP_SID, appSid);
+          if(isDebug)
+                  apiInvoker.enableDebug();
+   }
+
   public PdfApi(String apiKey, String appSid) {
     apiInvoker.addDefaultHeader(apiInvoker.API_KEY, apiKey);
     apiInvoker.addDefaultHeader(apiInvoker.APP_SID, appSid);
   }
 
+  public PdfApi(String apiKey, String appSid, boolean isDebug) {
+          apiInvoker.addDefaultHeader(apiInvoker.API_KEY, apiKey);
+          apiInvoker.addDefaultHeader(apiInvoker.APP_SID, appSid);
+          if(isDebug)
+                  apiInvoker.enableDebug();
+   }
+  
   public ApiInvoker getInvoker() {
     return apiInvoker;
   }
